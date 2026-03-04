@@ -53,7 +53,7 @@ def background_processing(job_id, body):
 
         agent = AzureLLMAgent()
 
-        print('pushed from git to lambda')
+        print('pushin third time from git to lambda')
         # Fetch requested fields
         fields = fetch_requested_fields(user_id, cluster_id)
         

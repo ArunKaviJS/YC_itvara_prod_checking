@@ -1,7 +1,6 @@
 import time
 import boto3
 import random
-from trp import Document
 import os 
 from dotenv import load_dotenv
 import base64

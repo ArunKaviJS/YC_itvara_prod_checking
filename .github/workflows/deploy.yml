@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  S3_BUCKET: yc-itvara-prod-checking
+  S3_BUCKET: yc-itvara-prod-001
   LAMBDA_NAME: yellowchunks-handler-API   # 👈 replace with actual lambda name
 
 jobs:

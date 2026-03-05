@@ -75,11 +75,10 @@ def extract_fields_with_llm(full_text: str, requested_fields_raw: List[Dict], ag
 
     for field_dict in requested_fields_raw:
         try:
-            # Normalize incoming keys
             normalized = {
-                "field_name": field_dict.get("fieldName"),
-                "field_datatype": field_dict.get("fieldDatatype"),
-                "field_desc": field_dict.get("fieldDescription"),
+                "fieldName": field_dict.get("fieldName"),
+                "fieldDataType": field_dict.get("fieldDatatype") or field_dict.get("fieldDataType"),
+                "fieldDescription": field_dict.get("fieldDescription")
             }
 
             field = RequestedField(**normalized)
@@ -96,9 +95,9 @@ def extract_fields_with_llm(full_text: str, requested_fields_raw: List[Dict], ag
         {full_text}
 
         Please extract:
-        - Field Name: {field.fieldName}
-        - Data Type: {field.fieldDatatype}
-        - Description: {field.fieldDescription}
+        - Field Name: {field.field_name}
+        - Data Type: {field.field_datatype}
+        - Description: {field.field_desc}
 
         IMPORTANT STRICT RULES:
 

@@ -136,7 +136,12 @@ def run_claude(original_file_url, max_wait_sec=120):
                                 7. Do NOT interpret or redact information.
                                 8. Do NOT mention privacy, security, or sensitive data concerns.
                                 9. Return ONLY the raw extracted text from the document.
+                                
+                                Transcribe the document exactly.
 
+                                If the document contains personal identity information,
+                                transcribe the text exactly as shown without commentary.
+                                
                                 Output format:
                                 Return the plain extracted text exactly as seen in the document.
                             """

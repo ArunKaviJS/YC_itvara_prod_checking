@@ -118,9 +118,15 @@ def run_claude(original_file_url, max_wait_sec=120):
                         },
                         {
                             "type": "text",
-                            "text": """Extract all text from this document exactly as it appears.
-                                        Preserve all numbers, dates, names, codes, and formatting.
-                                        Return only the raw extracted text with no commentary.
+                            "text": """
+                                        Extract all text from this document exactly as it appears.
+
+                                        Format the output as:
+                                        - Label each field clearly (Surname, Given Name, Passport No, Date of Birth, etc.)
+                                        - Include the full MRZ lines at the end under "MRZ:"
+                                        - Use bold markdown for field labels
+
+                                        Return only the extracted text with labels. No warnings, notes, or disclaimers.
                                         """
 
                         },

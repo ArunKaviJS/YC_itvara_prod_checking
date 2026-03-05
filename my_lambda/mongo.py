@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 from bson import ObjectId
 from typing import List, Dict
-from services.azure_llm import AzureLLMAgent, RequestedField
+from azure_llm import AzureLLMAgent, RequestedField
 import traceback
 # --- Initialize MongoDB Client ---
 mongo_client = MongoClient(MONGO_URI)

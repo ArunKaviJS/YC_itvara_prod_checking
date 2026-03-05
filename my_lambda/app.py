@@ -7,6 +7,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from uuid import uuid4
 import awsgi
+from pymongo import MongoClient
 
 # --- Load environment variables ---
 load_dotenv(".env")
@@ -20,9 +21,9 @@ sqs = boto3.client("sqs")
 SQS_QUEUE_URL = os.getenv("SQS_QUEUE_URL")
 
 # --- Service imports ---
-from services.textract_service import run_textract, get_random_textract_client
-from services.azure_llm import AzureLLMAgent
-from db.mongo import (
+from textract_service import run_textract, get_random_textract_client
+from azure_llm import AzureLLMAgent
+from mongo import (
     fetch_requested_fields,
     fetch_extracted_text,
     mark_file_as_failed,
@@ -35,6 +36,11 @@ from db.mongo import (
 )
 from config import S3_BUCKET_NAME
 
+
+# MongoDB connection
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client["DB_NAME"]
+collection = db["FILE_DETAILS"]
 
 def background_processing(job_id, body):
     try:
@@ -67,7 +73,14 @@ def background_processing(job_id, body):
         else:
             #filename = filename or f"{file_id}.pdf"  # fallback if filename missing
             # Fetch originalFile URL from DB
-            original_file_url = body.get("originalFile")
+            
+            document = collection.find_one({"fileId": file_id})
+            if not document:
+                raise Exception("File not found in database")
+            
+            original_file_url = document.get("originalFile")    
+            
+            print('***originalFile***',original_file_url)
 
             if not original_file_url:
                 raise ValueError("❌ originalFile URL missing")

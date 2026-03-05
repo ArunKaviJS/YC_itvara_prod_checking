@@ -38,9 +38,10 @@ from bson import ObjectId
 
 from config import S3_BUCKET_NAME
 
-
+MONGO_URI=os.getenv("MONGO_URI")
+print("mongouri",MONGO_URI)
 # MongoDB connection
-client = MongoClient(os.getenv("MONGO_URI"))
+client = MongoClient(MONGO_URI)
 db = client["DB_NAME"]
 collection = db["FILE_DETAILS"]
 

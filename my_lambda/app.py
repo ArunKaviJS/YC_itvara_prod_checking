@@ -81,8 +81,7 @@ def background_processing(job_id, body):
                     "clusterId": ObjectId(cluster_id)
                 }
             
-            document = collection.find_one({"_id": ObjectId(file_id)})
-            original_file_url = document.get("originalFile")
+            original_file_url = collection.find_one({"_id": ObjectId(file_id)}, {"originalFile": 1})["originalFile"]
             
             if not original_file_url:
                 raise Exception("File not found in database")

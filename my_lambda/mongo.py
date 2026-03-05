@@ -92,17 +92,17 @@ def extract_fields_with_llm(full_text: str, requested_fields_raw: List[Dict], ag
             continue
 
         prompt = f"""
-        You are an AI assistant that extracts values from OCR text.
+        You are an AI assistant that extracts specific field values from OCR text.
 
         OCR Text:
+        \"\"\"
         {full_text}
+        \"\"\"
 
-        Please extract:
-        - Field Name: {field.field_name}
-        - Data Type: {field.field_datatype}
+        FIELD TO EXTRACT:
+        - Name: {field.field_name}
+        - Type: {field.field_datatype}
         - Description: {field.field_desc}
-
-        IMPORTANT STRICT RULES:
 
         1. Extract ONLY the exact value that explicitly exists in the OCR text.
         2. Do NOT guess.

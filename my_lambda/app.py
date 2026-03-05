@@ -10,7 +10,7 @@ import awsgi
 from pymongo import MongoClient
 
 # --- Load environment variables ---
-load_dotenv(".env")
+load_dotenv()
 
 # --- Initialize Flask app ---
 app = Flask(__name__)

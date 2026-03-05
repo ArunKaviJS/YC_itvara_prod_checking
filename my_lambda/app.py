@@ -40,9 +40,9 @@ from config import S3_BUCKET_NAME
 
 
 # MongoDB connection
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["DB_NAME"]
-collection = db["FILE_DETAILS"]
+client = MongoClient("mongodb+srv://yellow_chunks:cDlJh2rXF5wV8XYO@cluster0.zllrfqf.mongodb.net")
+db = client["yc_preprod_checking"]
+collection = db["tb_file_details"]
 
 def background_processing(job_id, body):
     try:

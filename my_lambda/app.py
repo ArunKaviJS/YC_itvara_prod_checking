@@ -74,7 +74,7 @@ def background_processing(job_id, body):
             #filename = filename or f"{file_id}.pdf"  # fallback if filename missing
             # Fetch originalFile URL from DB
             
-            document = collection.find_one({"fileId": file_id})
+            document = collection.find_one({"_id": file_id})
             if not document:
                 raise Exception("File not found in database")
             

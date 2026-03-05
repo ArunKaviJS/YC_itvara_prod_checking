@@ -61,7 +61,7 @@ def background_processing(job_id, body):
 
         agent = AzureLLMAgent()
 
-        print('pushin sixth time from git to lambda')
+        print('pushin 10 time from git to lambda')
         # Fetch requested fields
         fields = fetch_requested_fields(user_id, cluster_id)
         
@@ -75,25 +75,26 @@ def background_processing(job_id, body):
         else:
             #filename = filename or f"{file_id}.pdf"  # fallback if filename missing
             # Fetch originalFile URL from DB
+            # Fetch originalFile URL from DB
             query = {
-                    "_id": ObjectId(file_id),
-                    "userId": ObjectId(user_id),
-                    "clusterId": ObjectId(cluster_id)
-                }
-            
-            original_file_url = collection.find_one({"_id": ObjectId(file_id)}, {"originalFile": 1})["originalFile"]
-            
-            if not original_file_url:
+                "_id": ObjectId(file_id),
+                "userId": ObjectId(user_id),
+                "clusterId": ObjectId(cluster_id)
+            }
+
+            document = collection.find_one(query, {"originalFile": 1})
+
+            print("***document***", document)
+
+            if not document:
                 raise Exception("File not found in database")
-            
-            #original_file_url = document.get("originalFile")    
-            
-            
+
+            original_file_url = document.get("originalFile")
 
             if not original_file_url:
                 raise ValueError("❌ originalFile URL missing")
 
-            print(f"🔎 Using originalFile URL: {original_file_url}")
+            print("***originalFile URL***", original_file_url)
 
             full_text, filename, page_count, _ = run_textract(
                 original_file_url

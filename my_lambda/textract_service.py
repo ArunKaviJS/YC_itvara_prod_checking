@@ -9,7 +9,7 @@ load_dotenv()
 from anthropic import Anthropic
 s3 = boto3.client("s3")
 
-client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+client_claude = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 
 TEXTRACT_REGIONS = [
@@ -59,7 +59,7 @@ def cleanup_temp_bucket(temp_bucket, temp_key, region):
     except Exception as e:
         print(f"⚠️ Error deleting temp file or bucket: {e}")
         
-def run_textract(original_file_url, max_wait_sec=120):
+def run_claude(original_file_url, max_wait_sec=120):
     """
     Download directly from originalFile URL
     Send to Claude OCR
@@ -101,7 +101,7 @@ def run_textract(original_file_url, max_wait_sec=120):
 
         print("🤖 Sending document to Claude OCR...")
 
-        response = client.messages.create(
+        response = client_claude.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=4000,
             messages=[

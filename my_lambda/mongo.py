@@ -72,9 +72,18 @@ def fetch_job_status(job_id: str):
 
 def extract_fields_with_llm(full_text: str, requested_fields_raw: List[Dict], agent: AzureLLMAgent) -> List[str]:
     extracted_values = []
+
     for field_dict in requested_fields_raw:
         try:
-            field = RequestedField(**field_dict)
+            # Normalize incoming keys
+            normalized = {
+                "field_name": field_dict.get("fieldName"),
+                "field_datatype": field_dict.get("fieldDatatype"),
+                "field_desc": field_dict.get("fieldDescription"),
+            }
+
+            field = RequestedField(**normalized)
+
         except Exception as e:
             print(f"❌ Invalid field: {field_dict} -> {e}")
             extracted_values.append("NA")
@@ -87,9 +96,9 @@ def extract_fields_with_llm(full_text: str, requested_fields_raw: List[Dict], ag
         {full_text}
 
         Please extract:
-        - Field Name: {field.field_name}
-        - Data Type: {field.field_datatype}
-        - Description: {field.field_desc}
+        - Field Name: {field.fieldName}
+        - Data Type: {field.fieldDatatype}
+        - Description: {field.fieldDescription}
 
         IMPORTANT STRICT RULES:
 

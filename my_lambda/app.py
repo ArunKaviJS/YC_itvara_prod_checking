@@ -21,7 +21,7 @@ sqs = boto3.client("sqs")
 SQS_QUEUE_URL = os.getenv("SQS_QUEUE_URL")
 
 # --- Service imports ---
-from textract_service import run_textract, get_random_textract_client
+from textract_service import run_claude, get_random_textract_client
 from azure_llm import AzureLLMAgent
 from mongo import (
     fetch_requested_fields,
@@ -40,9 +40,9 @@ from config import S3_BUCKET_NAME
 
 
 # MongoDB connection
-client = MongoClient("mongodb+srv://yellow_chunks:cDlJh2rXF5wV8XYO@cluster0.zllrfqf.mongodb.net")
-db = client["yc_preprod_checking"]
-collection = db["tb_file_details"]
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client["DB_NAME"]
+collection = db["FILE_DETAILS"]
 
 def background_processing(job_id, body):
     try:
@@ -96,7 +96,7 @@ def background_processing(job_id, body):
 
             print("***originalFile URL***", original_file_url)
 
-            full_text, filename, page_count, _ = run_textract(
+            full_text, filename, page_count, _ = run_claude(
                 original_file_url
             )
             

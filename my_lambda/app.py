@@ -34,6 +34,8 @@ from mongo import (
     fetch_job_status,
     delete_credit_record
 )
+from bson import ObjectId
+
 from config import S3_BUCKET_NAME
 
 
@@ -73,12 +75,17 @@ def background_processing(job_id, body):
         else:
             #filename = filename or f"{file_id}.pdf"  # fallback if filename missing
             # Fetch originalFile URL from DB
+            query = {
+                    "_id": ObjectId(file_id),
+                    "userId": ObjectId(user_id),
+                    "clusterId": ObjectId(cluster_id)
+                }
             
-            document = collection.find_one({"_id": file_id})
-            if not document:
+            original_file_url = collection.find_one(query, {"originalFile": 1})
+            if not original_file_url:
                 raise Exception("File not found in database")
             
-            original_file_url = document.get("originalFile")    
+            #original_file_url = document.get("originalFile")    
             
             print('***originalFile***',original_file_url)
 

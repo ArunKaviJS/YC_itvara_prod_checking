@@ -138,13 +138,6 @@ def run_claude(original_file_url, max_wait_sec=120):
                                     → Between "P<IND<" and first "<<" = NOTHING → Surname = (blank)
                                     → After first "<<" = "NARENDRA<KUMAR" → Given Name = NARENDRA KUMAR
 
-                                    Line 1: P<IND<SURESH<<KUMAR<<<<<<<<<<<<<<<<<<<<<<<
-                                    → Between "P<IND<" and first "<<" = "SURESH" → Surname = SURESH
-                                    → After first "<<" = "KUMAR" → Given Name = KUMAR
-
-                                    Line 1: P<IND<SHARMA<<RAHUL<KUMAR<<<<<<<<<<<<<<<<
-                                    → Between "P<IND<" and first "<<" = "SHARMA" → Surname = SHARMA  
-                                    → After first "<<" = "RAHUL<KUMAR" → Given Name = RAHUL KUMAR
 
                                     Now extract all fields:
 

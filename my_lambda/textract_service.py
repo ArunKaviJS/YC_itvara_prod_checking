@@ -119,44 +119,54 @@ def run_claude(original_file_url, max_wait_sec=120):
                         {
                             "type": "text",
                             "text": """
-                                    You are extracting data from a passport image.
+                                You are a passport data extractor. Follow these steps EXACTLY in order.
 
-                                    EXTRACT SURNAME AND GIVEN NAME FROM MRZ ONLY - THIS IS THE MOST ACCURATE METHOD:
+                                STEP 1 - READ THE MRZ LINES:
+                                Read both MRZ lines from the bottom of the passport image exactly as printed.
+                                Write them out:
+                                MRZ Line 1: [exact text]
+                                MRZ Line 2: [exact text]
 
-                                    MRZ LINE 1 STRUCTURE: P<{Country Code}{SURNAME}<<{GIVEN NAME(S)}<<<...
-                                    - After "P<IND<" (or P<{any 3 letter country}<) → everything before the FIRST "<<" is the SURNAME
-                                    - After the FIRST "<<" → everything before the next "<<" or end of filler "<" is the GIVEN NAME
-                                    - If there is NO text between "P<IND<" and "<<" → Surname is BLANK
-                                    - "<" within a name segment means a SPACE in the actual name
+                                STEP 2 - PARSE SURNAME FROM MRZ LINE 1:
+                                MRZ Line 1 always starts with: P<{3-letter-country-code}
+                                Example start: "P<IND<"
 
-                                    MRZ LINE 2 STRUCTURE: {Passport No}{Check digit}{Country}{Date of Birth}{Check}{Sex}{Expiry}{Check}...
-                                    - First 9 characters = Passport Number
-                                    - Characters 10-15 (after country code) = Date of Birth (YYMMDD)
+                                After removing "P<IND<" from the start, look at what remains.
+                                - Find the FIRST occurrence of "<<" (double chevron) in what remains.
+                                - Everything BEFORE that first "<<" = SURNAME
+                                - If there is NOTHING before the first "<<" (i.e., line starts with P<IND<<<) = Surname is BLANK
 
-                                    EXAMPLES:
-                                    Line 1: P<IND<<NARENDRA<KUMAR<<<<<<<<<<<<<<<<<<<<<
-                                    → Between "P<IND<" and first "<<" = NOTHING → Surname = (blank)
-                                    → After first "<<" = "NARENDRA<KUMAR" → Given Name = NARENDRA KUMAR
+                                STEP 3 - PARSE GIVEN NAME FROM MRZ LINE 1:
+                                - After the first "<<", take all text until you hit "<<<" or end of name section
+                                - Replace any single "<" with a SPACE
+                                - This is the GIVEN NAME
 
+                                STEP 4 - VERIFY YOUR PARSING:
+                                Show your work like this:
+                                MRZ Line 1 raw: P<IND<<NARENDRA<KUMAR<<<<<<<<<<
+                                After removing "P<IND<": <NARENDRA<KUMAR<<<<<<<<<<
+                                First "<<" found at position: 0 (immediately)
+                                Text BEFORE first "<<": (nothing)
+                                → SURNAME = (blank)
+                                Text AFTER first "<<": NARENDRA<KUMAR
+                                Replace "<" with space: NARENDRA KUMAR
+                                → GIVEN NAME = NARENDRA KUMAR
 
-                                    Now extract all fields:
-
-                                    **Surname:** (parse from MRZ Line 1 using rules above)
-                                    **Given Name:** (parse from MRZ Line 1 using rules above)
-                                    **Passport No:** (first 9 chars of MRZ Line 2)
-                                    **Nationality:**
-                                    **Date of Birth:**
-                                    **Sex:**
-                                    **Place of Birth:**
-                                    **Place of Issue:**
-                                    **Date of Issue:**
-                                    **Date of Expiry:**
-                                    **MRZ:**
-                                    (line 1)
-                                    (line 2)
-
-                                    Return only the extracted fields above. No extra text, warnings, or disclaimers.
-                                    """
+                                STEP 5 - OUTPUT FINAL RESULT:
+                                **Surname:** 
+                                **Given Name:** 
+                                **Passport No:** (characters 1-9 of MRZ Line 2)
+                                **Nationality:**
+                                **Date of Birth:**
+                                **Sex:**
+                                **Place of Birth:**
+                                **Place of Issue:**
+                                **Date of Issue:**
+                                **Date of Expiry:**
+                                **MRZ:**
+                                (line 1)
+                                (line 2)
+                                """
                         },
                     ],
                 }

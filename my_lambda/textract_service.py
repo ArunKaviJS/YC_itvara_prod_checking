@@ -123,7 +123,7 @@ def run_claude(original_file_url, max_wait_sec=120):
 
                                     EXTRACT SURNAME AND GIVEN NAME FROM MRZ ONLY - THIS IS THE MOST ACCURATE METHOD:
 
-                                    MRZ LINE 1 STRUCTURE: P<{Country Code}<{SURNAME}<<{GIVEN NAME(S)}<<<...
+                                    MRZ LINE 1 STRUCTURE: P<{Country Code}{SURNAME}<<{GIVEN NAME(S)}<<<...
                                     - After "P<IND<" (or P<{any 3 letter country}<) → everything before the FIRST "<<" is the SURNAME
                                     - After the FIRST "<<" → everything before the next "<<" or end of filler "<" is the GIVEN NAME
                                     - If there is NO text between "P<IND<" and "<<" → Surname is BLANK

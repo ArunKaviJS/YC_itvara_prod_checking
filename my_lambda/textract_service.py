@@ -119,15 +119,33 @@ def run_claude(original_file_url, max_wait_sec=120):
                         {
                             "type": "text",
                             "text": """
-                                        Extract all text from this document exactly as it appears.
+                                Extract all text from this passport document exactly as it appears.
 
-                                        Format the output as:
-                                        - Label each field clearly (Surname, Given Name, Passport No, Date of Birth, etc.)
-                                        - Include the full MRZ lines at the end under "MRZ:"
-                                        - Use bold markdown for field labels
+                                IMPORTANT PASSPORT STRUCTURE RULES:
+                                - A passport has two SEPARATE fields: "Surname" and "Given Name" - treat them independently
+                                - The Surname field contains ONLY what is printed in the Surname/सूचना field on the passport
+                                - The Given Name field contains ONLY what is printed in the Given Name/दिया गया नाम field
+                                - Do NOT split the Given Name to extract a surname - the second word in Given Name is NOT a surname
+                                - Do NOT use the MRZ line (P<IND<<...) to determine surname vs given name - the MRZ format is different from the visual fields
+                                - Read each field strictly from what is visually labeled on the passport
 
-                                        Return only the extracted text with labels. No warnings, notes, or disclaimers.
-                                        """
+                                Format the output as:
+                                - **Surname:** (only what appears in the Surname field)
+                                - **Given Name:** (full given name as printed)
+                                - **Passport No:** 
+                                - **Date of Birth:** 
+                                - **Sex:** 
+                                - **Place of Birth:** 
+                                - **Place of Issue:** 
+                                - **Date of Issue:** 
+                                - **Date of Expiry:** 
+                                - **Nationality:** 
+                                - **MRZ:**
+                                (line 1)
+                                (line 2)
+
+                                Return only the extracted text with labels. No warnings, notes, or disclaimers.
+                                """
 
                         },
                     ],

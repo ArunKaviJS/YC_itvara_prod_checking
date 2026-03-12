@@ -119,25 +119,38 @@ def run_claude(original_file_url, max_wait_sec=120):
                         {
                             "type": "text",
                             "text": """
-                                    You are extracting data from a passport image. Follow these rules STRICTLY.
+                                    You are extracting data from a passport image.
 
-                                    CRITICAL RULE - SURNAME vs GIVEN NAME:
-                                    - Look at the passport visually. There is a printed label "Surname" with a box/field next to it.
-                                    - ONLY extract what is written in THAT specific "Surname" labeled field as the Surname.
-                                    - There is a separate printed label "Given Name" with its own field.
-                                    - ONLY extract what is written in THAT specific "Given Name" labeled field as the Given Name.
-                                    - If the Surname field is EMPTY or BLANK on the passport, output: **Surname:** (blank)
-                                    - NEVER derive Surname from Given Name. NEVER split Given Name into parts.
-                                    - NEVER use the MRZ lines to determine Surname or Given Name.
+                                    EXTRACT SURNAME AND GIVEN NAME FROM MRZ ONLY - THIS IS THE MOST ACCURATE METHOD:
 
-                                    Example of WRONG behavior: Given Name = "NARENDRA KUMAR" → Surname = "KUMAR" ❌
-                                    Example of CORRECT behavior: Read the Surname field directly from passport label → Surname = whatever is in that box ✅
+                                    MRZ LINE 1 STRUCTURE: P<{Country Code}<{SURNAME}<<{GIVEN NAME(S)}<<<...
+                                    - After "P<IND<" (or P<{any 3 letter country}<) → everything before the FIRST "<<" is the SURNAME
+                                    - After the FIRST "<<" → everything before the next "<<" or end of filler "<" is the GIVEN NAME
+                                    - If there is NO text between "P<IND<" and "<<" → Surname is BLANK
+                                    - "<" within a name segment means a SPACE in the actual name
 
-                                    Now extract the following fields by reading each labeled field on the passport:
+                                    MRZ LINE 2 STRUCTURE: {Passport No}{Check digit}{Country}{Date of Birth}{Check}{Sex}{Expiry}{Check}...
+                                    - First 9 characters = Passport Number
+                                    - Characters 10-15 (after country code) = Date of Birth (YYMMDD)
 
-                                    **Surname:** (read ONLY from the Surname labeled field)
-                                    **Given Name:** (read ONLY from the Given Name labeled field, keep it complete)
-                                    **Passport No:**
+                                    EXAMPLES:
+                                    Line 1: P<IND<<NARENDRA<KUMAR<<<<<<<<<<<<<<<<<<<<<
+                                    → Between "P<IND<" and first "<<" = NOTHING → Surname = (blank)
+                                    → After first "<<" = "NARENDRA<KUMAR" → Given Name = NARENDRA KUMAR
+
+                                    Line 1: P<IND<SURESH<<KUMAR<<<<<<<<<<<<<<<<<<<<<<<
+                                    → Between "P<IND<" and first "<<" = "SURESH" → Surname = SURESH
+                                    → After first "<<" = "KUMAR" → Given Name = KUMAR
+
+                                    Line 1: P<IND<SHARMA<<RAHUL<KUMAR<<<<<<<<<<<<<<<<
+                                    → Between "P<IND<" and first "<<" = "SHARMA" → Surname = SHARMA  
+                                    → After first "<<" = "RAHUL<KUMAR" → Given Name = RAHUL KUMAR
+
+                                    Now extract all fields:
+
+                                    **Surname:** (parse from MRZ Line 1 using rules above)
+                                    **Given Name:** (parse from MRZ Line 1 using rules above)
+                                    **Passport No:** (first 9 chars of MRZ Line 2)
                                     **Nationality:**
                                     **Date of Birth:**
                                     **Sex:**
